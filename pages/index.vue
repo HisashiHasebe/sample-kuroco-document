@@ -1,16 +1,16 @@
 <template>
-  <main>
-    <header class="hero" :style="{backgroundImage: `url(${response.details.ext_1.url})`}">
+  <main v-if="details">
+    <header class="hero" :style="headerStyle">
       <div class="hero__text">
-        <h1>{{ response.details.ext_2 }}</h1>
-        <p>{{ response.details.ext_3 }}</p>
+        <h1>{{ details.ext_2 }}</h1>
+        <p>{{ details.ext_3 }}</p>
       </div>
     </header>
 
     <section>
         <h2>WORKS</h2>
         <ul>
-            <li v-for="n in response.details.ext_4" :key="n.slag" class="works__item">
+            <li v-for="n in details.ext_4 || []" :key="n.slag" class="works__item">
                 <img :src="n.ext_4.url" />
                 <div class="works__item__text">
                     <h3>{{ n.ext_5 }}</h3>
@@ -22,7 +22,7 @@
 
     <section class="about">
         <h2>ABOUT</h2>
-        <p v-html="response.details.ext_7"></p>
+        <p v-html="details.ext_7"></p>
     </section>
   </main>
 </template>
@@ -124,14 +124,22 @@ p {
 
 <script>
 export default {
+  computed: {
+    details() {
+      return this?.response?.details || {}
+    },
+    headerStyle() {
+      return this.details?.ext_1?.url ? { backgroundImage: `url(${this.response.details.ext_1.url})` } : {}
+    },
+  },
   async asyncData({ $axios, app }) {
     try {
       const response = await $axios.$get('/rcms-api/3/service/3')
-        console.log(response)
+        console.table('RESPONSE LOG:\n', response)
         return { response }
-        } catch (e) {
-          console.log(e.message)
-          }
+      } catch (e) {
+        console.log(e.message)
+      }
   },
 }
 </script>
