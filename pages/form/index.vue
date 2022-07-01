@@ -45,7 +45,6 @@
       <div v-for="col in cols" :key="col.objKey" class="row--form">
         <h2>[{{ col.title }}]</h2>
         <input v-if="col.title === 'file'" :name="col.objKey" type="file" @change="uploadFile" />
-        <input v-else-if="col.title === 'date'" type="date" :min="getMin(col.options.minPeriod)" />
         <input v-else :name="col.objKey" type="text" />
       </div>
 
@@ -79,8 +78,6 @@
 </template>
 
 <script>
-import strtotime from 'locutus/php/datetime/strtotime';
-
 const FORM_ID = 3 // 作成したフォーム定義のID
 
 export default {
@@ -105,11 +102,6 @@ export default {
     }
   },
   methods: {
-    strtotime,
-    getMin(startPeriodStr) {
-        const minDateNum = strtotime(startPeriodStr) * 1000; // to millisec
-        return new Date(minDateNum).toJSON().split('T')[0] // to YYYY-MM-DD
-    },
     async uploadFile(e) {
       const fm = new FormData();
       fm.append('file', e.target.files[0]);
