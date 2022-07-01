@@ -45,7 +45,7 @@
       <div v-for="col in cols" :key="col.objKey" class="row--form">
         <h2>[{{ col.title }}]</h2>
         <input v-if="col.title === 'file'" :name="col.objKey" type="file" @change="uploadFile" />
-        <input v-else-if="col.title === 'date'" type="date" :min="getMin(col.options.minPeriod)" />
+        <input v-else-if="col.title === 'date'" type="date" :min="getMin(col.options.find(({ key }) => key === 'minPeriod').value)" />
         <input v-else :name="col.objKey" type="text" />
       </div>
 
