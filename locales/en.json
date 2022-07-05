@@ -1,0 +1,11 @@
+{
+    "links": {
+      "home": "Home",
+      "news": "News",
+      "en": "English",
+      "ja": "Japanese"
+    },
+    "news": {
+      "title": "News list"
+    }
+  }
