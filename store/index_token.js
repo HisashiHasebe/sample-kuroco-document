@@ -40,7 +40,7 @@ export const actions = {
     },
     async logout ({ commit }) {
         try {
-            await this.$axios.$post(process.env.BASE_URL + '/rcms-api/1/logout')
+            await this.$axios.$post('/rcms-api/9/logout')
         } catch {
             /** No Process */
             /** エラーが返却されてきた場合は、結果的にログアウトできているものとみなし、これを無視します。 */
