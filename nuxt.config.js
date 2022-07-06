@@ -41,6 +41,7 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    // 多言語設定利用のため追加 https://kuroco.app/ja/docs/tutorials/building-a-multi-language-site/
     [
       'nuxt-i18n',
       {
@@ -63,6 +64,7 @@ export default {
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     baseURL: process.env.BASE_URL,
+    // クロスオリジンでのcookieを有効化 https://kuroco.app/ja/docs/tutorials/integrate-login/
     credentials: true,
     withCredentials: true
   },

@@ -1,3 +1,7 @@
+// KurocoとNuxt.jsで、ログイン画面を構築するで設定
+// https://kuroco.app/ja/docs/tutorials/integrate-login/
+// Cookie利用の記述になっているのでアクセストークン利用にする場合は index_token.js の内容を上書きしてください。
+
 export const state = () => ({
     profile: null
 })
