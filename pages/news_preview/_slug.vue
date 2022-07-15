@@ -9,7 +9,7 @@
 export default {
     async asyncData ({ $axios, params }) {
         try {
-            const response = await $axios.$get(`/rcms-api/4/newsdetail/${params.slug}`)
+            const response = await $axios.$get(`/rcms-api/6/newsdetail/${params.slug}`)
             console.log(response);
             return { response }
         }catch (e) {
