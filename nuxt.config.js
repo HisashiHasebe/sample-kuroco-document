@@ -41,11 +41,32 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    // 多言語設定利用のため追加 https://kuroco.app/ja/docs/tutorials/building-a-multi-language-site/
+    [
+      'nuxt-i18n',
+      {
+        strategy: 'prefix_and_default',
+        // 切り替える言語を定義
+        locales: [
+          { code: 'ja', file: 'ja.json' },
+          { code: 'en', file: 'en.json' },
+        ],
+        // デフォルトの言語を設定
+        defaultLocale: 'ja',
+        vueI18nLoader: true,
+        lazy: true,
+        // jsonファイルを保存したディレクトリを指定
+        langDir: 'locales/',
+      },
+    ],
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    baseURL: process.env.BASE_URL
+    baseURL: process.env.BASE_URL,
+    // クロスオリジンでのcookieを有効化 https://kuroco.app/ja/docs/tutorials/integrate-login/
+    credentials: true,
+    withCredentials: true
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
