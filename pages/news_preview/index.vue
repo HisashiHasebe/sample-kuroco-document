@@ -7,11 +7,11 @@
 
 <script>
 export default {
-  async asyncData({ $axios, i18n, params }) {
+  async asyncData({ $axios, route }) {
     return {
-      response: await $axios.$get(`/rcms-api/6/newsdetail/${params.slug}`, {
+      response: await $axios.$get(`/rcms-api/6/news/preview`, {
         params: {
-          _lang: i18n.locale,
+          preview_token: route.query.preview_token,
         },
       }),
     };
