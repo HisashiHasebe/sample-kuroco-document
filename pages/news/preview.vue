@@ -6,22 +6,16 @@
         >{{ n.ymd }} {{ n.subject }}</nuxt-link
       >
     </div>
-
-    <Pagenator v-bind="{ ...response.pageInfo }" />
   </div>
 </template>
 
 <script>
 export default {
   async asyncData({ $axios, route }) {
-    return {
-      response: await $axios.$get('/rcms-api/4/news', {
-        params: {
-          cnt: 4,
-          pageID: route.query.page || 1,
-        },
-      }),
-    };
+    const previewResponse = await $axios.$get(
+      `/rcms-api/6/news/preview?preview_token=${route.query.preview_token}`
+    );
+    return { response: { list: [previewResponse.details] } };
   },
 };
 </script>
