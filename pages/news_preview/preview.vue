@@ -1,10 +1,10 @@
 <template>
   <div>
-    <p>ニュース一覧ページ{{ this.$route.params.page }}</p>
+    <p>ニュース一覧ページ</p>
     <div v-for="n in response.list" :key="n.slug">
-      <nuxt-link :to="`/news/${n.topics_id}`"
-        >{{ n.ymd }} {{ n.subject }}</nuxt-link
-      >
+      <nuxt-link :to="`${$route.path}/${n.topics_id}`">
+        {{ n.ymd }} {{ n.subject }}
+      </nuxt-link>
     </div>
   </div>
 </template>

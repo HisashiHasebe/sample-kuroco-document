@@ -2,9 +2,9 @@
   <div>
     <button type="button" @click="logout">ログアウト</button>
     <div v-for="n in response.list" :key="n.slug">
-      <nuxt-link :to="`/news/${n.topics_id}`"
-        >{{ n.ymd }} {{ n.subject }}</nuxt-link
-      >
+      <nuxt-link :to="`${$route.path}/${n.topics_id}`">
+        {{ n.ymd }} {{ n.subject }}
+      </nuxt-link>
     </div>
   </div>
 </template>

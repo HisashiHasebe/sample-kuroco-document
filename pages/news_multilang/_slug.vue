@@ -1,10 +1,6 @@
 <template>
   <div>
-    <header>
-      <nuxt-link :to="switchLocalePath('en')">{{ $t('links.en') }}</nuxt-link>
-      |
-      <nuxt-link :to="switchLocalePath('ja')">{{ $t('links.ja') }}</nuxt-link>
-    </header>
+    <LanguageSwitcher />
 
     <h1 class="title">{{ response.details.subject }}</h1>
     <div class="post" v-html="response.details.contents"></div>
@@ -26,9 +22,6 @@ export default {
         },
       }),
     };
-  },
-  mounted() {
-    this.$store.dispatch('restoreLoginState', { disableRedirect: true }); // restores login state without redirect
   },
 };
 </script>
