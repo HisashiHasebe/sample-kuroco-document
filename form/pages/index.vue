@@ -1,51 +1,235 @@
 <template>
-  <div class="container">
-    <main>
-      <div>
-        <img src="/logo_Kuroco_black.svg" />
+  <div>
+    <h1>FORMページ</h1>
+
+    <form v-if="!submitted" ref="form">
+      <div v-if="error" class="error">
+        <p v-for="(err, idx) in error" :key="idx">
+          {{ err }}
+        </p>
       </div>
-      <div>
-        Visit our <a href="https://kuroco.app/">website</a> if you are new to
-        Kuroco!
+
+      <div class="row--status">
+        <h2>フォーム名</h2>
+        <div>{{ name }}</div>
       </div>
-    </main>
-    <footer>
-      Copyright © {{ new Date().getFullYear() }} Diverta Inc. All rights
-      reserved.
-    </footer>
+
+      <div class="row--status">
+        <h2>説明</h2>
+        <div>
+          <p v-for="(line, idx) in textLines2texts(info)" :key="idx">
+            {{ line }}
+          </p>
+        </div>
+      </div>
+
+      <div class="row--status">
+        <h2>サンクス文言</h2>
+        <div>
+          <p v-for="(line, idx) in textLines2texts(thanksText)" :key="idx">
+            {{ line }}
+          </p>
+        </div>
+      </div>
+
+      <div class="row--status">
+        <h2>フォーム項目</h2>
+        <div class="row--internal">
+          <div v-for="col in cols" :key="col.key">
+            <p>[{{ col.title }}]</p>
+            <pre>{{ col }}</pre>
+          </div>
+        </div>
+      </div>
+
+      <div v-for="col in cols" :key="col.objKey" class="row--form">
+        <h2>[{{ col.title }}]</h2>
+        <input
+          v-if="col.title === 'file'"
+          :name="col.objKey"
+          type="file"
+          @change="uploadFile"
+        />
+        <input
+          v-else-if="col.title === 'date'"
+          type="date"
+          :min="
+            getMin(col.options.find(({ key }) => key === 'minPeriod').value)
+          "
+        />
+        <input v-else :name="col.objKey" type="text" />
+      </div>
+
+      <div class="row--bottom-next">
+        <button @click="handleOnSubmit">submit</button>
+      </div>
+    </form>
+
+    <form v-else>
+      <div class="row--status">
+        <h2>問い合わせID</h2>
+        <div>
+          {{ submittedId }}
+        </div>
+      </div>
+
+      <div class="row--status">
+        <h2>サンクス文言</h2>
+        <div>
+          <p v-for="(line, idx) in textLines2texts(thanksText)" :key="idx">
+            {{ line }}
+          </p>
+        </div>
+      </div>
+
+      <div class="row--bottom-back">
+        <button @click="handleOnBack">back</button>
+      </div>
+    </form>
   </div>
 </template>
 
 <script>
-export default {};
+import strtotime from 'locutus/php/datetime/strtotime';
+
+const FORM_ID = 3; // 作成したフォーム定義のID
+
+export default {
+  async asyncData({ $axios }) {
+    const response = await $axios.$get(`/rcms-api/8/form/${FORM_ID}`);
+    return {
+      name: response.details.inquiry_name,
+      info: response.details.inquiry_info,
+      thanksText: response.details.thanks_text,
+      cols: Object.entries(response.details.cols).map(([k, v]) => ({
+        objKey: k,
+        ...v,
+      })),
+    };
+  },
+  data: () => {
+    return {
+      submitted: false,
+      submittedId: null,
+      error: null,
+      file_id: null,
+    };
+  },
+  methods: {
+    strtotime,
+    getMin(startPeriodStr) {
+      const minDateNum = strtotime(startPeriodStr) * 1000; // to millisec
+      return new Date(minDateNum).toJSON().split('T')[0]; // to YYYY-MM-DD
+    },
+    async uploadFile(e) {
+      const fm = new FormData();
+      fm.append('file', e.target.files[0]);
+
+      const { file_id } = await this.$axios.$post(`/rcms-api/8/file`, fm, {
+        headers: {
+          'Content-Type': 'multipart/form-data', // required to post file as a binary
+        },
+      });
+      this.file_id = file_id;
+    },
+    textLines2texts(textLines = '') {
+      return textLines.split('\r\n');
+    },
+    async handleOnSubmit(e) {
+      e.preventDefault();
+
+      // collect input elements
+      const formInputElements = Array.from(this.$refs.form.elements).filter(
+        (elm) => elm.tagName.toLowerCase() === 'input'
+      );
+
+      // transform key:value inputs to an object
+      const body = formInputElements
+        .map((elm) => ({ [elm.name]: elm.value }))
+        .reduce((prev, cur) => ({ ...prev, ...cur }), {});
+
+      // apply file_id instead of the actual file input value
+      body.ext_03 = {
+        file_id: this.file_id,
+      };
+
+      try {
+        // post data
+        const { id } = await this.$axios.$post(
+          `/rcms-api/8/form?id=${FORM_ID}`,
+          body
+        );
+        this.error = null;
+        this.submittedId = id;
+        this.submitted = true;
+      } catch (e) {
+        this.error = [`${e}`, ...e.response.data.errors];
+      }
+    },
+    handleOnBack(e) {
+      e.preventDefault();
+      this.submitted = false;
+    },
+  },
+};
 </script>
 
 <style>
-body {
+body,
+h2 {
   margin: 0;
 }
 
-.container {
-  display: grid;
-  grid-template:
-    'main' calc(100vh - 3rem)
-    'footer' 3rem /
-    auto;
+input {
+  width: 100%;
+  border: none;
 }
 
-main {
-  grid-area: main;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-flow: column;
+.error {
+  color: red;
 }
-footer {
-  grid-area: footer;
-  color: #eeedfa;
-  background: #000000;
-  border-top: 1px solid #3f4044;
-  padding: 10px 20px;
-  font-size: 0.7rem;
+.error > *:first-child {
+  font-weight: bold;
+}
+
+.row--status {
+  display: flex;
+  border-top: 1px solid black;
+}
+.row--status > *:first-child {
+  background-color: yellow;
+  min-width: 15rem;
+  max-width: 15rem;
+  border-right: 1px solid black;
+}
+
+.row--form {
+  display: flex;
+  border-top: 1px solid black;
+}
+.row--form > *:first-child {
+  background-color: aquamarine;
+  min-width: 15rem;
+  max-width: 15rem;
+  border-right: 1px solid black;
+}
+
+.row--bottom-next {
+  padding: 8px 16px;
+  display: flex;
+  justify-content: flex-end;
+}
+.row--bottom-back {
+  padding: 8px 16px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.row--internal {
+  display: flex;
+}
+
+form > *:nth-last-child(2) {
+  border-bottom: 1px solid black;
 }
 </style>

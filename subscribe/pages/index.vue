@@ -1,51 +1,71 @@
 <template>
-  <div class="container">
-    <main>
-      <div>
-        <img src="/logo_Kuroco_black.svg" />
-      </div>
-      <div>
-        Visit our <a href="https://kuroco.app/">website</a> if you are new to
-        Kuroco!
-      </div>
-    </main>
-    <footer>
-      Copyright © {{ new Date().getFullYear() }} Diverta Inc. All rights
-      reserved.
-    </footer>
+  <div>
+    <form>
+      <h1>マガジン登録</h1>
+      <p v-if="resultMessage !== null">
+        {{ resultMessage }}
+      </p>
+      <input
+        v-model="emailEntered"
+        name="email"
+        type="email"
+        placeholder="email"
+      />
+      <button @click.prevent="subscribeSubmit">購読する</button>
+      <button @click.prevent="unsubscribeSubmit">購読解除する</button>
+      <button @click.prevent="sendTestMail">テスト送信する</button>
+    </form>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      emailEntered: '',
+      resultMessage: null,
+    };
+  },
+  methods: {
+    //購読するクリック時の動作
+    async subscribeSubmit() {
+      try {
+        const response = await this.$axios.$post(
+          `/rcms-api/11/magazine_subscribe/1`,
+          {
+            email: this.emailEntered,
+          }
+        );
+        this.resultMessage = response.messages[0];
+      } catch (error) {
+        this.resultMessage = error.response.data.errors[0].message;
+      }
+    },
+    //購読解除するクリック時の動作
+    async unsubscribeSubmit() {
+      try {
+        const response = await this.$axios.$post(
+          `/rcms-api/11/magazine_unsubscribe/1`,
+          {
+            email: this.emailEntered,
+          }
+        );
+        this.resultMessage = response.messages[0];
+      } catch (error) {
+        this.resultMessage = error.response.data.errors[0].message;
+      }
+    },
+    //テスト送信するクリック時の動作
+    async sendTestMail() {
+      try {
+        await this.$axios.$post(`/rcms-api/11/magazine_sendMail`, {
+          mail_to: this.emailEntered,
+        });
+        this.resultMessage = 'テストメールを送信しました。';
+      } catch (error) {
+        this.resultMessage = error.response.data.errors[0].message;
+      }
+    },
+  },
+};
 </script>
-
-<style>
-body {
-  margin: 0;
-}
-
-.container {
-  display: grid;
-  grid-template:
-    'main' calc(100vh - 3rem)
-    'footer' 3rem /
-    auto;
-}
-
-main {
-  grid-area: main;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-flow: column;
-}
-footer {
-  grid-area: footer;
-  color: #eeedfa;
-  background: #000000;
-  border-top: 1px solid #3f4044;
-  padding: 10px 20px;
-  font-size: 0.7rem;
-}
-</style>

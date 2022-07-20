@@ -1,51 +1,78 @@
 <template>
-  <div class="container">
-    <main>
-      <div>
-        <img src="/logo_Kuroco_black.svg" />
-      </div>
-      <div>
-        Visit our <a href="https://kuroco.app/">website</a> if you are new to
-        Kuroco!
-      </div>
-    </main>
-    <footer>
-      Copyright © {{ new Date().getFullYear() }} Diverta Inc. All rights
-      reserved.
-    </footer>
+  <div>
+    <form class="search-form" @submit.prevent="search">
+      <label>
+        Keyword
+        <input v-model="searchInput.keyword" type="text" />
+      </label>
+      <button type="submit">Search</button>
+    </form>
+    <SearchResult :search-result="searchResult" />
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      searchInput: {
+        keyword: '',
+      },
+      searchResult: {},
+    };
+  },
+  mounted() {
+    this.search();
+  },
+  methods: {
+    async search() {
+      let searchResult;
+      try {
+        // 自分の環境で設定したエンドポイントのURLに置き換えてください
+        const response = await this.$axios.get('/rcms-api/5/content_keyword', {
+          params: {
+            filter: this.buildFilterQuery(),
+          },
+        });
+        searchResult = response?.data || {};
+      } catch (errorResponse) {
+        searchResult = {
+          errors: errorResponse?.data?.errors || ['Unexpected error'],
+        };
+      }
+      this.searchResult = searchResult;
+    },
+    // filterクエリの生成
+    buildFilterQuery() {
+      const filterQuery = Object.entries(this.searchInput)
+        .reduce((queries, [col, value]) => {
+          switch (col) {
+            case 'keyword':
+              if (value !== '') {
+                queries.push(`${col} contains "${value}"`);
+              }
+              break;
+            default:
+              break;
+          }
+          return queries;
+        }, [])
+        .join(' AND ');
+      return filterQuery;
+    },
+  },
+};
 </script>
 
-<style>
-body {
-  margin: 0;
+<style scoped>
+.search-form {
+  border: 1px solid;
+  padding: 10px;
 }
-
-.container {
-  display: grid;
-  grid-template:
-    'main' calc(100vh - 3rem)
-    'footer' 3rem /
-    auto;
-}
-
-main {
-  grid-area: main;
+.search-form label {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-flow: column;
-}
-footer {
-  grid-area: footer;
-  color: #eeedfa;
-  background: #000000;
-  border-top: 1px solid #3f4044;
-  padding: 10px 20px;
-  font-size: 0.7rem;
+  gap: 0.5rem;
+  width: 100%;
+  margin: 0.5rem 0;
 }
 </style>

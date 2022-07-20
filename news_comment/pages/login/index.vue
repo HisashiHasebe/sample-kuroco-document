@@ -14,7 +14,7 @@
     <button type="submit">ログイン</button>
 
     <div>
-      <nuxt-link to="/news_comment"> ニュース一覧ページへ </nuxt-link>
+      <nuxt-link to="/"> ニュース一覧ページへ </nuxt-link>
     </div>
   </form>
 </template>
