@@ -1,23 +1,21 @@
 <template>
-  <div>
-    <div v-for="n in response.list" :key="n.slug">
-      <nuxt-link :to="`/news_preview/${n.topics_id}`">{{n.ymd}} {{n.subject}}</nuxt-link>
+    <div>
+      <h1 class="title">{{ response.details.subject }}</h1>
+      <div class="post" v-html="response.details.contents"></div>
     </div>
-  </div>
 </template>
-
 
 <script>
 export default {
-    async asyncData ({ route, $axios }) {
+    async asyncData ({ route, $axios, params }) {
 
         const requestNews = async () => {
-            const response = await $axios.$get('/rcms-api/6/news');
+            const response = await $axios.$get(`/rcms-api/6/newsdetail/${params.slug}`);
             return { response };
         };
         const requestNewsPreview = async (previewToken) => {
             const response = await $axios.$get('/rcms-api/6/news/preview' + '?preview_token=' + previewToken);
-            return { response: { list: [response.details] } };
+            return { response };
         };
 
         // URLのクエリに、
