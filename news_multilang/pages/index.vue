@@ -4,7 +4,7 @@
 
     <h1 class="title">{{ $t('news.title') }}</h1>
     <div v-for="n in response.list" :key="n.slug">
-      <nuxt-link :to="`/${n.topics_id}`">
+      <nuxt-link :to="localePath(`/${n.topics_id}`)">
         {{ n.ymd }} {{ n.subject }}
       </nuxt-link>
     </div>
