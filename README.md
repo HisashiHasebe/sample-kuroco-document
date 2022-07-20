@@ -1,69 +1,31 @@
-# sample-kuroco-document
+<img src="https://user-images.githubusercontent.com/53550975/179878755-f001a6d1-1846-4b42-881e-0e77a610f89a.svg" alt="Kuroco logo" title="Kuroco" align="right" height="96" width="96"/>
 
-## Build Setup
+# Kuroco Examples
 
-```bash
-# install dependencies
-$ npm install
+[Kuroco][kuroco] examples for frontend developpers.
 
-# serve with hot reload at localhost:3000
-$ npm run dev
+See [Kuroco docs][kuroco_docs] to get details for Kuroco.
 
-# build for production and launch server
-$ npm run build
-$ npm run start
+[kuroco]: https://kuroco.app/
+[kuroco_docs]: https://kuroco.app/docs/
 
-# generate static project
-$ npm run generate
-```
+## Setup
 
-For detailed explanation on how things work, check out the [documentation](https://nuxtjs.org).
+### Prerequisites
 
-## Special Directories
+1. Install [Node.js version 10 or greater][node]
+1. Clone this repository.
 
-You can create the following extra directories, some of which have special behaviors. Only `pages` is required; you can delete them if you don't want to use their functionality.
+### How to run a sample
 
-### `assets`
+1. Change directory to one of the sample folders, e.g. `begginers_guide`:
 
-The assets directory contains your uncompiled assets such as Stylus or Sass files, images, or fonts.
+        cd begginers_guide/
 
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/assets).
+1. Install the sample's dependencies (see the sample's README for details):
 
-### `components`
+        npm install
 
-The components directory contains your Vue.js components. Components make up the different parts of your page and can be reused and imported into your pages, layouts and even other components.
+1. Run the sample:
 
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/components).
-
-### `layouts`
-
-Layouts are a great help when you want to change the look and feel of your Nuxt app, whether you want to include a sidebar or have distinct layouts for mobile and desktop.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/layouts).
-
-
-### `pages`
-
-This directory contains your application views and routes. Nuxt will read all the `*.vue` files inside this directory and setup Vue Router automatically.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/get-started/routing).
-
-### `plugins`
-
-The plugins directory contains JavaScript plugins that you want to run before instantiating the root Vue.js Application. This is the place to add Vue plugins and to inject functions or constants. Every time you need to use `Vue.use()`, you should create a file in `plugins/` and add its path to plugins in `nuxt.config.js`.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/plugins).
-
-### `static`
-
-This directory contains your static files. Each file inside this directory is mapped to `/`.
-
-Example: `/static/robots.txt` is mapped as `/robots.txt`.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/static).
-
-### `store`
-
-This directory contains your Vuex store files. Creating a file in this directory automatically activates Vuex.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/store).
+        npm run dev
