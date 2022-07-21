@@ -52,6 +52,7 @@
         />
         <input
           v-else-if="col.title === 'date'"
+          :name="col.objKey"
           type="date"
           :min="
             getMin(col.options.find(({ key }) => key === 'minPeriod').value)
@@ -146,12 +147,15 @@ export default {
       // transform key:value inputs to an object
       const body = formInputElements
         .map((elm) => ({ [elm.name]: elm.value }))
+        .filter((inputObj) => Object.values(inputObj).every((v) => v !== ''))
         .reduce((prev, cur) => ({ ...prev, ...cur }), {});
 
       // apply file_id instead of the actual file input value
-      body.ext_03 = {
-        file_id: this.file_id,
-      };
+      if (body.ext_03) {
+        body.ext_03 = {
+          file_id: this.file_id,
+        };
+      }
 
       try {
         // post data
