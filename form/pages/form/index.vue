@@ -44,7 +44,13 @@
 
       <div v-for="col in cols" :key="col.objKey" class="row--form">
         <h2>[{{ col.title }}]</h2>
-        <input :name="col.objKey" type="text" />
+        <input
+          v-if="col.title === 'file'"
+          :name="col.objKey"
+          type="file"
+          @change="uploadFile"
+        />
+        <input v-else :name="col.objKey" type="text" />
       </div>
 
       <div class="row--bottom-next">
@@ -97,9 +103,21 @@ export default {
       submitted: false,
       submittedId: null,
       error: null,
+      file_id: null,
     };
   },
   methods: {
+    async uploadFile(e) {
+      const fm = new FormData();
+      fm.append('file', e.target.files[0]);
+
+      const { file_id } = await this.$axios.$post(`/rcms-api/8/file`, fm, {
+        headers: {
+          'Content-Type': 'multipart/form-data', // required to post file as a binary
+        },
+      });
+      this.file_id = file_id;
+    },
     textLines2texts(textLines = '') {
       return textLines.split('\r\n');
     },
@@ -117,6 +135,13 @@ export default {
         .filter((inputObj) => Object.values(inputObj).every((v) => v !== ''))
         .reduce((prev, cur) => ({ ...prev, ...cur }), {});
 
+      // apply file_id instead of the actual file input value
+      if (body.ext_03) {
+        body.ext_03 = {
+          file_id: this.file_id,
+        };
+      }
+      
       try {
         // post data
         const { id } = await this.$axios.$post(
