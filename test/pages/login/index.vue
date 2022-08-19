@@ -1,5 +1,9 @@
 <template>
   <form @submit.prevent="login">
+    <p v-if="loginStatus !== null" :style="{ color: resultMessageColor }">
+      {{ resultMessage }}
+    </p>
+
     <input v-model="email" name="email" type="email" placeholder="email" />
     <input
       v-model="password"
@@ -16,12 +20,43 @@ export default {
   data() {
     return {
       email: '',
-      password: ''
+      password: '',
+
+      loginStatus: null,
+      resultMessage: null
     };
   },
+  computed: {
+    resultMessageColor () {
+      switch (this.loginStatus) {
+      case 'success':
+        return 'green'
+      case 'failure':
+        return 'red'
+      default:
+        return ''
+      };
+    }
+  },
   methods: {
-    login () {
-        console.log(this.email, this.password)
+    async login () {
+      // ダミーリクエスト(1秒待機の後成功/失敗する)
+      const shouldSuccess = true
+      const request = new Promise((resolve, reject) =>
+          setTimeout(
+            () => (shouldSuccess ? resolve() : reject(Error('login failure'))),
+            1000
+          )
+      )
+
+      try {
+        await request
+        this.loginStatus = 'success'
+        this.resultMessage = 'ログインに成功しました。'
+      } catch (e) {
+        this.loginStatus = 'failure'
+        this.resultMessage = 'ログインに失敗しました。'
+      };
     }
   },
 };
