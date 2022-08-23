@@ -20,6 +20,11 @@ export const mutations = {
     Object.entries(payload).forEach(([key, val]) => {
       localStorage.setItem(key, val)
     })
+  },
+  setAccessTokenOnRequestHeader (state, { rcmsApiAccessToken }) {
+      this.$axios.defaults.headers.common = {
+          'X-RCMS-API-ACCESS-TOKEN': rcmsApiAccessToken
+      }
   }
 }
 
@@ -30,12 +35,15 @@ export const actions = {
         '/rcms-api/9/token',
         { grant_token }
     )
+
+    commit('updateLocalStorage', { rcmsApiAccessToken: access_token.value })
+    commit('setAccessTokenOnRequestHeader', { rcmsApiAccessToken: access_token.value })
     
     commit('setProfile', { profile: {} }) // ダミーのオブジェクトをstore.state.profileに適用
-    commit('updateLocalStorage', { authenticated: true })
   },
   async restoreLoginState ({ commit }) {
-    const authenticated = JSON.parse(localStorage.getItem('authenticated'))
+    const rcmsApiAccessToken = localStorage.getItem('rcmsApiAccessToken')
+    const authenticated = typeof rcmsApiAccessToken === 'string' && rcmsApiAccessToken.length > 0
     
     if (!authenticated) {
       throw new Error('need to login')
