@@ -27,7 +27,8 @@ export const actions = {
   async login({ commit }, payload) {
     await this.$axios.$post('/rcms-api/9/login', payload)
     
-    commit('setProfile', { profile: {} }) // ダミーのオブジェクトをstore.state.profileに適用
+    const profileRes = await this.$axios.$get('/rcms-api/9/profile')
+    commit('setProfile', { profile: profileRes.data })
     commit('updateLocalStorage', { authenticated: true })
   },
   async restoreLoginState ({ commit }) {
@@ -36,7 +37,7 @@ export const actions = {
     if (!authenticated) {
       throw new Error('need to login')
     }
-    commit('setProfile', { profile: {} }) // ダミーのオブジェクトをstore.
-    await null
+    const profileRes = await this.$axios.$get('/rcms-api/9/profile')
+    commit('setProfile', { profile: profileRes.data })
   }
 }
