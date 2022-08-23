@@ -13,3 +13,15 @@ export const mutations = {
       state.profile = profile
   }
 }
+
+export const actions = {
+  async restoreLoginState ({ commit }) {
+    const authenticated = JSON.parse(localStorage.getItem('authenticated'))
+    
+    if (!authenticated) {
+      throw new Error('need to login')
+    }
+    commit('setProfile', { profile: {} }) // ダミーのオブジェクトをstore.
+    await null
+  }
+}
