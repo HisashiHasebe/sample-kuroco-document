@@ -12,12 +12,6 @@
       placeholder="password"
     />
     <button type="submit">ログイン</button>
-    
-    <div>
-      <nuxt-link to="/news">
-      ニュース一覧ページへ
-      </nuxt-link>
-    </div>
   </form>
 </template>
 
