@@ -39,7 +39,8 @@ export const actions = {
     commit('updateLocalStorage', { rcmsApiAccessToken: access_token.value })
     commit('setAccessTokenOnRequestHeader', { rcmsApiAccessToken: access_token.value })
     
-    commit('setProfile', { profile: {} }) // ダミーのオブジェクトをstore.state.profileに適用
+    const profileRes = await this.$axios.$get('/rcms-api/9/profile')
+    commit('setProfile', { profile: profileRes.data })
   },
   async restoreLoginState ({ commit }) {
     const rcmsApiAccessToken = localStorage.getItem('rcmsApiAccessToken')
@@ -48,7 +49,14 @@ export const actions = {
     if (!authenticated) {
       throw new Error('need to login')
     }
-    commit('setProfile', { profile: {} }) // ダミーのオブジェクトをstore.
-    await null
+
+    try {
+      commit('setAccessTokenOnRequestHeader', { rcmsApiAccessToken })
+      const profileRes = await this.$axios.$get('/rcms-api/9/profile')
+      commit('setProfile', { profile: profileRes.data })
+    } catch {
+      await dispatch('logout')
+      throw new Error('need to login')
+    }
   }
 }
