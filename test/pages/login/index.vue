@@ -57,6 +57,8 @@ export default {
 
       try {
         await request
+        this.$store.commit('setProfile', { profile: {} }) // ダミーのオブジェクトをstore.state.profileに適用
+
         this.loginStatus = 'success'
         this.resultMessage = 'ログインに成功しました。'
       } catch (e) {
