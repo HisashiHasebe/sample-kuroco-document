@@ -36,7 +36,7 @@ export const actions = {
         commit('setAccessTokenOnRequestHeader', { rcmsApiAccessToken: access_token.value })
 
         const profileRes = await this.$axios.$get('/rcms-api/9/profile')
-        commit('setProfile', { profile: profileRes.data })
+        commit('setProfile', { profile: profileRes })
     },
     async logout ({ commit }) {
         try {
@@ -63,7 +63,7 @@ export const actions = {
         try {
             commit('setAccessTokenOnRequestHeader', { rcmsApiAccessToken })
             const profileRes = await this.$axios.$get('/rcms-api/9/profile')
-            commit('setProfile', { profile: profileRes.data })
+            commit('setProfile', { profile: profileRes })
         } catch {
             await dispatch('logout')
             throw new Error('need to login')
